@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LaMuni te escucha</title>
+<meta name="description" content="Contanos cómo te atendimos. Menos de un minuto.">
+<meta name="theme-color" content="#0f8bd6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@600;700;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   LaMuni te escucha — formulario público
+   Sistema de diseño: Esquina Gobierno
+   ============================================================ */
+:root{
+  --blue-50:#ecf8ff;--blue-100:#d4eefe;--blue-200:#aadcfb;--blue-300:#74c5f6;
+  --blue-400:#40b2f4;--blue-500:#1fa3ec;--blue-600:#0f8bd6;--blue-700:#0f72b0;--blue-800:#135d8e;
+  --ink-900:#111418;--ink-800:#1f2730;--ink-700:#38434f;--ink-600:#54616e;--ink-500:#6f7c89;
+  --ink-300:#c4ccd4;--ink-200:#e1e7ec;--ink-100:#eef2f6;--ink-50:#f6f9fb;
+  --sun-100:#fef6d6;--sun-200:#fdeaa3;--sun-500:#fbb912;--sun-600:#f29400;
+  --green-500:#2faa5a;--green-50:#e8f6ee;--red-500:#e0413c;
+  --radius:14px;--radius-pill:999px;
+  --shadow:0 2px 12px rgba(20,63,94,.08);
+  --shadow-brand:0 6px 18px rgba(31,163,236,.32);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito Sans',system-ui,-apple-system,sans-serif;
+  background:var(--ink-50);color:var(--ink-800);line-height:1.45;
+  -webkit-font-smoothing:antialiased;padding-bottom:96px;
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 18px}
+
+/* ---------- header ---------- */
+header{
+  background:linear-gradient(150deg,var(--blue-600),var(--blue-800));
+  color:#fff;padding:26px 0 30px;position:relative;overflow:hidden;
+  border-radius:0 0 26px 26px;
+}
+header::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.07)}
+header::before{content:"";position:absolute;left:-40px;bottom:-90px;width:170px;height:170px;border-radius:50%;background:rgba(250,221,92,.10)}
+header .wrap{position:relative;z-index:2}
+h1{font-family:'Anton',sans-serif;font-size:2.1rem;line-height:.98;text-transform:uppercase;letter-spacing:.01em}
+h1 .box{background:#fff;color:var(--blue-700);padding:0 8px;border-radius:6px}
+header p{margin-top:9px;font-size:.95rem;font-weight:600;color:rgba(255,255,255,.93)}
+#areaTag{
+  display:inline-block;margin-top:14px;background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.3);padding:5px 14px;border-radius:var(--radius-pill);
+  font-size:.78rem;font-weight:800;letter-spacing:.03em;
+}
+#areaTag.hidden{display:none}
+
+/* ---------- preguntas ---------- */
+main{margin-top:-14px}
+.q{
+  background:#fff;border:1px solid var(--ink-200);border-radius:var(--radius);
+  padding:18px 16px;margin-bottom:12px;box-shadow:var(--shadow);
+  transition:border-color .2s var(--ease);
+}
+.q.answered{border-color:var(--blue-300)}
+.q .num{
+  font-family:'Archivo',sans-serif;font-weight:900;font-size:.66rem;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--blue-600);margin-bottom:5px;
+}
+.q h2{
+  font-family:'Archivo',sans-serif;font-weight:800;font-size:1.05rem;
+  color:var(--ink-900);line-height:1.28;margin-bottom:13px;
+}
+.q h2 .opt{font-weight:600;font-size:.78rem;color:var(--ink-500);display:block;margin-top:3px}
+
+/* opciones tipo lista (P1) */
+.opts{display:grid;gap:8px}
+.opt-btn{
+  display:block;width:100%;text-align:left;background:var(--ink-50);
+  border:2px solid var(--ink-200);border-radius:12px;padding:13px 15px;
+  font-family:inherit;font-size:.97rem;font-weight:700;color:var(--ink-700);
+  cursor:pointer;transition:all .16s var(--ease);
+}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn[aria-pressed="true"]{
+  background:var(--blue-500);border-color:var(--blue-500);color:#fff;
+  box-shadow:var(--shadow-brand);
+}
+
+/* escala 1-5 */
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.sc-btn{
+  aspect-ratio:1/1;background:var(--ink-50);border:2px solid var(--ink-200);
+  border-radius:12px;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;
+  color:var(--ink-600);cursor:pointer;transition:all .16s var(--ease);
+  display:flex;align-items:center;justify-content:center;
+}
+.sc-btn:active{transform:scale(.94)}
+.sc-btn[aria-pressed="true"]{
+  background:var(--blue-500);border-color:var(--blue-500);color:#fff;
+  box-shadow:var(--shadow-brand);
+}
+.sc-legend{display:flex;justify-content:space-between;margin-top:7px;font-size:.74rem;color:var(--ink-500);font-weight:700}
+
+/* texto libre */
+textarea{
+  width:100%;min-height:94px;border:2px solid var(--ink-200);border-radius:12px;
+  padding:13px 14px;font-family:inherit;font-size:1rem;color:var(--ink-800);
+  resize:vertical;background:var(--ink-50);transition:border-color .16s var(--ease);
+}
+textarea:focus{outline:none;border-color:var(--blue-400);background:#fff}
+input[type="tel"]{
+  width:100%;border:2px solid var(--ink-200);border-radius:12px;padding:13px 14px;
+  font-family:inherit;font-size:1rem;background:var(--ink-50);margin-top:10px;
+}
+input[type="tel"]:focus{outline:none;border-color:var(--blue-400);background:#fff}
+
+/* contacto */
+.contact{background:var(--sun-100);border:1px solid var(--sun-200);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.contact label{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+.contact input[type="checkbox"]{width:22px;height:22px;accent-color:var(--blue-600);flex:0 0 auto;margin-top:1px}
+.contact .txt{font-size:.94rem;font-weight:700;color:var(--ink-800)}
+.contact .sub{font-size:.8rem;font-weight:400;color:var(--ink-600);margin-top:2px}
+#telWrap.hidden{display:none}
+
+/* aviso */
+.note{font-size:.78rem;color:var(--ink-500);text-align:center;padding:4px 6px 0;line-height:1.5}
+
+/* barra enviar */
+.bar{
+  position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);
+  backdrop-filter:blur(10px);border-top:1px solid var(--ink-200);
+  padding:12px 18px calc(12px + env(safe-area-inset-bottom));z-index:40;
+}
+.bar .wrap{padding:0}
+#send{
+  width:100%;background:var(--blue-500);color:#fff;border:none;border-radius:var(--radius-pill);
+  padding:16px;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.05rem;
+  letter-spacing:.02em;cursor:pointer;box-shadow:var(--shadow-brand);
+  transition:all .16s var(--ease);
+}
+#send:active{transform:scale(.98)}
+#send:disabled{background:var(--ink-300);box-shadow:none;cursor:not-allowed}
+#barHint{text-align:center;font-size:.75rem;color:var(--ink-500);margin-top:7px;font-weight:600}
+
+/* pantallas de estado */
+.screen{display:none;padding:70px 0 40px;text-align:center}
+.screen.on{display:block}
+.screen .ico{
+  width:78px;height:78px;border-radius:50%;margin:0 auto 22px;
+  display:flex;align-items:center;justify-content:center;font-size:2.3rem;color:#fff;
+}
+.screen h2{font-family:'Anton',sans-serif;font-size:2rem;text-transform:uppercase;color:var(--ink-900);line-height:1.02;margin-bottom:12px}
+.screen p{font-size:1rem;color:var(--ink-700);max-width:400px;margin:0 auto}
+.screen .small{font-size:.85rem;color:var(--ink-500);margin-top:20px}
+#okScreen .ico{background:var(--green-500)}
+#errScreen .ico{background:var(--red-500)}
+#retry{
+  margin-top:22px;background:var(--blue-500);color:#fff;border:none;border-radius:var(--radius-pill);
+  padding:13px 30px;font-family:'Archivo',sans-serif;font-weight:900;font-size:.95rem;cursor:pointer;
+}
+#loading{padding:90px 0;text-align:center;color:var(--ink-500);font-weight:700}
+.spin{width:34px;height:34px;border:3px solid var(--ink-200);border-top-color:var(--blue-500);border-radius:50%;margin:0 auto 14px;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1><span class="box">LaMuni</span> te escucha</h1>
+    <p>Contanos cómo te atendimos. Es menos de un minuto.</p>
+    <span id="areaTag" class="hidden"></span>
+  </div>
+</header>
+
+<div id="loading"><div class="spin"></div>Cargando…</div>
+
+<main id="form" class="hidden">
+  <div class="wrap">
+
+    <!-- P1 Resolución -->
+    <section class="q" data-q="p1">
+      <div class="num">Pregunta 1 de 6</div>
+      <h2 id="q1txt">¿Te resolvieron lo que viniste a buscar?</h2>
+      <div class="opts" id="p1"></div>
+    </section>
+
+    <!-- P2 Trato -->
+    <section class="q" data-q="p2">
+      <div class="num">Pregunta 2 de 6</div>
+      <h2>¿Cómo fue el trato que recibiste?</h2>
+      <div class="scale" data-scale="p2"></div>
+      <div class="sc-legend"><span>Muy malo</span><span>Muy bueno</span></div>
+    </section>
+
+    <!-- P3 Esfuerzo -->
+    <section class="q" data-q="p3">
+      <div class="num">Pregunta 3 de 6</div>
+      <h2 id="q3txt">¿Qué tan fácil te resultó hacer el trámite?</h2>
+      <div class="scale" data-scale="p3"></div>
+      <div class="sc-legend"><span>Muy difícil</span><span>Muy fácil</span></div>
+    </section>
+
+    <!-- P4 Claridad -->
+    <section class="q" data-q="p4">
+      <div class="num">Pregunta 4 de 6</div>
+      <h2>¿Te fuiste sabiendo claramente qué sigue?</h2>
+      <div class="scale" data-scale="p4"></div>
+      <div class="sc-legend"><span>Nada claro</span><span>Muy claro</span></div>
+    </section>
+
+    <!-- P5 Control -->
+    <section class="q" data-q="p5">
+      <div class="num">Pregunta 5 de 6</div>
+      <h2 id="q5txt">En general, ¿qué tan conforme quedaste con la atención?</h2>
+      <div class="scale" data-scale="p5"></div>
+      <div class="sc-legend"><span>Nada conforme</span><span>Muy conforme</span></div>
+    </section>
+
+    <!-- Pregunta propia del área (opcional, desde config) -->
+    <section class="q hidden" data-q="pp" id="ppBlock">
+      <div class="num">Pregunta del área</div>
+      <h2 id="ppTxt"></h2>
+      <div class="opts" id="pp"></div>
+      <div class="scale hidden" data-scale="pp" id="ppScale"></div>
+      <div class="sc-legend hidden" id="ppLegend"><span>Muy malo</span><span>Muy bueno</span></div>
+    </section>
+
+    <!-- P6 Abierta -->
+    <section class="q" data-q="p6">
+      <div class="num">Pregunta 6 de 6</div>
+      <h2>¿Qué podríamos hacer mejor?<span class="opt">Opcional. Escribí lo que quieras: lo lee el área que te atendió.</span></h2>
+      <textarea id="p6" maxlength="1500" placeholder="Tu comentario o sugerencia…"></textarea>
+    </section>
+
+    <!-- Contacto -->
+    <div class="contact">
+      <label>
+        <input type="checkbox" id="wantContact">
+        <span class="txt">Quiero que me contacten por este tema
+          <span class="sub">Dejanos un teléfono y el área correspondiente se va a comunicar con vos.</span>
+        </span>
+      </label>
+      <div id="telWrap" class="hidden">
+        <input type="tel" id="tel" inputmode="tel" placeholder="Teléfono de contacto" maxlength="30">
+      </div>
+    </div>
+
+    <p class="note">
+      Tu respuesta es <strong>anónima</strong>. No pedimos nombre ni DNI.<br>
+      El teléfono se guarda únicamente si pedís ser contactado, conforme a la Ley 25.326.
+    </p>
+
+  </div>
+</main>
+
+<!-- Confirmación -->
+<div class="screen" id="okScreen">
+  <div class="wrap">
+    <div class="ico">✓</div>
+    <h2>Gracias por<br>responder</h2>
+    <p id="okMsg">Tu respuesta ya llegó al Centro Estadístico Municipal y se suma al informe que recibe cada área todos los meses.</p>
+    <p class="small">Municipalidad de Esquina · Esquina, creciendo junto a vos</p>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="screen" id="errScreen">
+  <div class="wrap">
+    <div class="ico">!</div>
+    <h2>No pudimos<br>enviar</h2>
+    <p>Revisá tu conexión e intentá de nuevo. Si el problema sigue, avisale al personal del área.</p>
+    <button id="retry">Reintentar</button>
+  </div>
+</div>
+
+<div class="bar hidden" id="bar">
+  <div class="wrap">
+    <button id="send" disabled>Enviar respuesta</button>
+    <div id="barHint">Faltan responder 5 preguntas</div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — reemplazar por la URL /exec de la
+   implementación del Apps Script antes de publicar.
+   ============================================================ */
+const API = 'https://script.google.com/macros/s/AKfycbzmqktmNkZ07bPg0i7bPiat95z6OTnusnj7Zign4hfckls7Y6XtSBGll3Bis2oyOGBG/exec';
+
+/* ---- parámetros de la URL ---------------------------------
+   ?a=  código de área (obligatorio)     ej: ?a=serv_pub
+   ?c=  canal de aplicación               qr | wa | tablet | cierre
+   ?t=  token de un solo uso (solo canal "cierre")
+   ------------------------------------------------------------ */
+const P = new URLSearchParams(location.search);
+const AREA   = (P.get('a')  || '').trim();
+const CANAL  = (P.get('c')  || 'qr').trim();
+const TOKEN  = (P.get('t')  || '').trim();
+
+/* sustantivo por modo de contacto: ancla la redacción al contacto
+   real y evita que el vecino puntúe el servicio en vez de la atención */
+const SUSTANTIVO = {
+  tramite:  { hacer:'hacer el trámite',   vino:'¿Te resolvieron lo que viniste a buscar?',      conf:'En general, ¿qué tan conforme quedaste con la atención?' },
+  atencion: { hacer:'ser atendido',       vino:'¿Te resolvieron lo que viniste a buscar?',      conf:'En general, ¿qué tan conforme quedaste con la atención?' },
+  reclamo:  { hacer:'hacer el reclamo',   vino:'¿Se resolvió el reclamo que hiciste?',          conf:'En general, ¿qué tan conforme quedaste con cómo se atendió tu reclamo?' }
+};
+
+const R = { p1:null, p2:null, p3:null, p4:null, p5:null, pp:null };
+let CFG = null;
+
+/* ---------- utilidades ---------- */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function show(id){ $$('.screen').forEach(s=>s.classList.remove('on')); if(id) $(id).classList.add('on'); }
+
+/* anti-saturación del lado del navegador: una respuesta por área
+   cada 30 días. Es una barrera parcial —el vecino puede cambiar de
+   dispositivo o borrar datos— y así está documentado. */
+function yaRespondio(area){
+  try{
+    const k = 'lamuni_'+area;
+    const v = localStorage.getItem(k);
+    if(!v) return false;
+    return (Date.now() - Number(v)) < 30*24*60*60*1000;
+  }catch(e){ return false; }
+}
+function marcarRespondido(area){
+  try{ localStorage.setItem('lamuni_'+area, String(Date.now())); }catch(e){}
+}
+
+/* ---------- construcción de controles ---------- */
+const OPCIONES_P1 = [
+  {v:'si',      t:'Sí, me lo resolvieron'},
+  {v:'parcial', t:'En parte'},
+  {v:'tramite', t:'Sigue en trámite'},
+  {v:'no',      t:'No'}
+];
+
+function pintarOpciones(cont, opciones, campo){
+  cont.innerHTML = '';
+  opciones.forEach(o=>{
+    const b = document.createElement('button');
+    b.type='button'; b.className='opt-btn'; b.textContent=o.t;
+    b.setAttribute('aria-pressed','false');
+    b.onclick = ()=>{
+      Array.from(cont.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      R[campo] = o.v;
+      cont.closest('.q').classList.add('answered');
+      revisar();
+    };
+    cont.appendChild(b);
+  });
+}
+
+function pintarEscala(cont, campo){
+  cont.innerHTML = '';
+  for(let i=1;i<=5;i++){
+    const b = document.createElement('button');
+    b.type='button'; b.className='sc-btn'; b.textContent=i;
+    b.setAttribute('aria-pressed','false');
+    b.onclick = ()=>{
+      Array.from(cont.children).forEach(c=>c.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      R[campo] = i;
+      cont.closest('.q').classList.add('answered');
+      revisar();
+    };
+    cont.appendChild(b);
+  }
+}
+
+function revisar(){
+  const oblig = ['p1','p2','p3','p4','p5'];
+  const faltan = oblig.filter(k => R[k] === null).length;
+  $('#send').disabled = faltan > 0;
+  $('#barHint').textContent = faltan === 0
+    ? 'Listo. Podés enviar.'
+    : (faltan === 1 ? 'Falta responder 1 pregunta' : 'Faltan responder ' + faltan + ' preguntas');
+}
+
+/* ---------- carga de configuración vía JSONP ----------
+   Apps Script no expone cabeceras CORS de forma confiable tras el
+   redirect, por eso la config se pide con JSONP en vez de fetch. */
+function cargarConfig(){
+  return new Promise((resolve)=>{
+    if(!AREA){ resolve(null); return; }
+    const cb = 'lm_cb_' + Math.random().toString(36).slice(2);
+    const to = setTimeout(()=>{ limpiar(); resolve(null); }, 6000);
+    function limpiar(){ try{ delete window[cb]; s.remove(); }catch(e){} }
+    window[cb] = data => { clearTimeout(to); limpiar(); resolve(data); };
+    const s = document.createElement('script');
+    s.src = API + '?modo=config&a=' + encodeURIComponent(AREA) + '&callback=' + cb;
+    s.onerror = ()=>{ clearTimeout(to); limpiar(); resolve(null); };
+    document.body.appendChild(s);
+  });
+}
+
+/* ---------- inicialización ---------- */
+async function init(){
+  if(!AREA){
+    $('#loading').innerHTML =
+      '<div style="max-width:340px;margin:0 auto;color:var(--ink-600)">' +
+      '<strong>Enlace incompleto.</strong><br>Escaneá el código QR del área o pedí el enlace al personal municipal.</div>';
+    return;
+  }
+
+  if(yaRespondio(AREA)){
+    $('#loading').classList.add('hidden');
+    $('#okMsg').textContent = 'Ya respondiste una encuesta de esta área hace poco. Gracias por tu tiempo: para no molestarte, consultamos una sola vez cada 30 días.';
+    show('#okScreen');
+    return;
+  }
+
+  CFG = await cargarConfig();
+
+  /* si la config no responde, se usa un modo por defecto para no
+     dejar al vecino frente a una pantalla en blanco */
+  const modo   = (CFG && CFG.modo)   || 'tramite';
+  const nombre = (CFG && CFG.nombre) || '';
+  const S = SUSTANTIVO[modo] || SUSTANTIVO.tramite;
+
+  if(nombre){ $('#areaTag').textContent = nombre; $('#areaTag').classList.remove('hidden'); }
+  $('#q1txt').textContent = S.vino;
+  $('#q3txt').textContent = '¿Qué tan fácil te resultó ' + S.hacer + '?';
+  $('#q5txt').textContent = S.conf;
+
+  pintarOpciones($('#p1'), OPCIONES_P1, 'p1');
+  ['p2','p3','p4','p5'].forEach(k => pintarEscala(document.querySelector('[data-scale="'+k+'"]'), k));
+
+  /* pregunta propia del área */
+  if(CFG && CFG.pregunta){
+    $('#ppTxt').textContent = CFG.pregunta;
+    $('#ppBlock').classList.remove('hidden');
+    if(CFG.opciones && CFG.opciones.length){
+      pintarOpciones($('#pp'), CFG.opciones.map(o=>({v:o,t:o})), 'pp');
+    }else{
+      $('#pp').classList.add('hidden');
+      $('#ppScale').classList.remove('hidden');
+      $('#ppLegend').classList.remove('hidden');
+      pintarEscala($('#ppScale'), 'pp');
+    }
+  }
+
+  $('#wantContact').onchange = e => $('#telWrap').classList.toggle('hidden', !e.target.checked);
+  $('#send').onclick = enviar;
+  $('#retry').onclick = ()=>{ show(null); $('#form').classList.remove('hidden'); $('#bar').classList.remove('hidden'); };
+
+  $('#loading').classList.add('hidden');
+  $('#form').classList.remove('hidden');
+  $('#bar').classList.remove('hidden');
+  revisar();
+}
+
+/* ---------- envío ---------- */
+async function enviar(){
+  $('#send').disabled = true;
+  $('#send').textContent = 'Enviando…';
+
+  const quiere = $('#wantContact').checked;
+  const payload = {
+    area: AREA,
+    canal: CANAL,
+    token: TOKEN,
+    p1: R.p1, p2: R.p2, p3: R.p3, p4: R.p4, p5: R.p5,
+    pp: R.pp,
+    p6: ($('#p6').value || '').trim().slice(0,1500),
+    contactar: quiere ? 'si' : 'no',
+    telefono: quiere ? ($('#tel').value || '').trim().slice(0,30) : ''
+  };
+
+  try{
+    /* text/plain evita el preflight que Apps Script no maneja bien */
+    await fetch(API, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    marcarRespondido(AREA);
+    if(quiere) $('#okMsg').textContent = 'Tu respuesta ya llegó al Centro Estadístico Municipal. Como pediste ser contactado, derivamos tu caso al área que corresponde.';
+    $('#form').classList.add('hidden');
+    $('#bar').classList.add('hidden');
+    show('#okScreen');
+    window.scrollTo(0,0);
+  }catch(e){
+    $('#form').classList.add('hidden');
+    $('#bar').classList.add('hidden');
+    show('#errScreen');
+    $('#send').disabled = false;
+    $('#send').textContent = 'Enviar respuesta';
+    window.scrollTo(0,0);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
