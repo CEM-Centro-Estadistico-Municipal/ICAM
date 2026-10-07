@@ -54,7 +54,6 @@ header p{margin-top:9px;font-size:.95rem;font-weight:600;color:rgba(255,255,255,
   font-size:.78rem;font-weight:800;letter-spacing:.03em;
 }
 #areaTag.hidden{display:none}
-#areaTag.sinconf{background:rgba(255,255,255,.10);border-style:dashed;font-family:ui-monospace,monospace;letter-spacing:0}
 
 /* ---------- preguntas ---------- */
 main{margin-top:-14px}
@@ -287,8 +286,8 @@ input[type="tel"]:focus{outline:none;border-color:var(--blue-400);background:#ff
 
 <script>
 /* ============================================================
-   CONFIGURACIÓN — reemplazar por la URL /exec de la
-   implementación del Apps Script antes de publicar.
+   Destino de los envíos: la URL /exec de la implementación del
+   Apps Script. Es lo único que el formulario le pide al servidor.
    ============================================================ */
 const API = 'https://script.google.com/macros/s/AKfycbzmqktmNkZ07bPg0i7bPiat95z6OTnusnj7Zign4hfckls7Y6XtSBGll3Bis2oyOGBG/exec';
 
@@ -385,29 +384,68 @@ function revisar(){
     : (faltan === 1 ? 'Falta responder 1 pregunta' : 'Faltan responder ' + faltan + ' preguntas');
 }
 
-/* ---------- carga de configuración vía JSONP ----------
-   Apps Script no expone cabeceras CORS de forma confiable tras el
-   redirect, por eso la config se pide con JSONP en vez de fetch. */
-function cargarConfig(){
-  return new Promise((resolve)=>{
-    if(!AREA){ resolve(null); return; }
-    const cb = 'lm_cb_' + Math.random().toString(36).slice(2);
-    const to = setTimeout(()=>{ limpiar(); resolve(null); }, 6000);
-    function limpiar(){ try{ delete window[cb]; s.remove(); }catch(e){} }
-    window[cb] = data => { clearTimeout(to); limpiar(); resolve(data); };
-    const s = document.createElement('script');
-    s.src = API + '?modo=config&a=' + encodeURIComponent(AREA) + '&callback=' + cb;
-    s.onerror = ()=>{ clearTimeout(to); limpiar(); resolve(null); };
-    document.body.appendChild(s);
-  });
-}
+/* ============================================================
+   CONFIGURACIÓN DE ÁREAS
+   ------------------------------------------------------------
+   Vive acá, dentro del formulario, y NO se pide al servidor.
+
+   Son tres líneas de texto que cambian una o dos veces por año.
+   Pedirlas al Apps Script en cada carga agregaba una demora de
+   varios segundos, una dependencia de carga de scripts entre
+   dominios —que algunos navegadores bloquean— y un modo de falla
+   silenciosa: si no respondía, el vecino veía un formulario
+   genérico sin que nadie se enterara.
+
+   PARA SUMAR UN ÁREA hay que hacer las dos cosas:
+     1) agregar la entrada acá abajo, y
+     2) agregar la fila en la hoja Config_Areas del Sheet,
+        porque el backend valida contra esa hoja al recibir.
+
+   El código (ing_pub, salud_pub…) debe coincidir exactamente
+   con la columna `codigo` del Sheet.
+   ============================================================ */
+const AREAS = {
+  ing_pub: {
+    nombre: 'Tesorería e Ingresos Públicos',
+    modo: 'tramite',
+    pregunta: '¿Es la primera vez que venís por este mismo trámite?',
+    opciones: ['Sí, primera vez', 'Segunda vez', 'Tres veces o más']
+  },
+  salud_pub: {
+    nombre: 'Salud Pública',
+    modo: 'atencion',
+    pregunta: 'Antes de entrar al consultorio, ¿qué fue lo que más te costó?',
+    opciones: ['Conseguir el turno', 'El tiempo de espera',
+               'Que me dijeran a dónde ir o a quién dirigirme', 'No me costó nada']
+  },
+  serv_pub: {
+    nombre: 'Servicios Públicos',
+    modo: 'reclamo',
+    pregunta: 'Cuando se resolvió tu reclamo, ¿te avisaron?',
+    opciones: ['Sí, me avisaron', 'Me di cuenta solo, nadie me avisó',
+               'Todavía no sé si se resolvió']
+  }
+};
 
 /* ---------- inicialización ---------- */
-async function init(){
-  if(!AREA){
+function init(){
+  const aviso = txt =>
     $('#loading').innerHTML =
-      '<div style="max-width:340px;margin:0 auto;color:var(--ink-600)">' +
-      '<strong>Enlace incompleto.</strong><br>Escaneá el código QR del área o pedí el enlace al personal municipal.</div>';
+      '<div style="max-width:340px;margin:0 auto;color:var(--ink-600)">' + txt + '</div>';
+
+  if(!AREA){
+    aviso('<strong>Enlace incompleto.</strong><br>Escaneá el código QR del área o pedí el enlace al personal municipal.');
+    return;
+  }
+
+  CFG = AREAS[AREA] || null;
+
+  /* Código de área desconocido: el QR apunta a un área que no existe.
+     Mejor decirlo que levantar un formulario genérico cuyas respuestas
+     el backend va a rechazar igual. */
+  if(!CFG){
+    aviso('<strong>Enlace no reconocido.</strong><br>Pedile el enlace correcto al personal municipal.');
+    console.warn('[LaMuni] Código de área desconocido: "' + AREA + '". Revisar la constante AREAS del formulario.');
     return;
   }
 
@@ -418,22 +456,11 @@ async function init(){
     return;
   }
 
-  CFG = await cargarConfig();
+  const S = SUSTANTIVO[CFG.modo] || SUSTANTIVO.tramite;
+  const nombre = CFG.nombre;
 
-  /* si la config no responde, se usa un modo por defecto para no
-     dejar al vecino frente a una pantalla en blanco */
-  const modo   = (CFG && CFG.modo)   || 'tramite';
-  const nombre = (CFG && CFG.nombre) || '';
-  const S = SUSTANTIVO[modo] || SUSTANTIVO.tramite;
-
-  /* La píldora siempre se muestra. Con configuración lleva el nombre
-     oficial del área; sin configuración lleva el código crudo, que al
-     vecino no le dice nada pero avisa al instante a quien esté probando
-     que el formulario está corriendo sin conectarse al Sheet. */
-  $('#areaTag').textContent = nombre || AREA;
-  if(!nombre) $('#areaTag').classList.add('sinconf');
+  $('#areaTag').textContent = nombre;
   $('#areaTag').classList.remove('hidden');
-  if(!CFG) console.warn('[LaMuni] Sin configuración: el formulario no pudo leer el área "' + AREA + '" desde el Apps Script. Revisar la constante API y el acceso de la implementación.');
   $('#q1txt').textContent = S.vino;
   $('#q3txt').textContent = '¿Qué tan fácil te resultó ' + S.hacer + '?';
   $('#q5txt').textContent = S.conf;
